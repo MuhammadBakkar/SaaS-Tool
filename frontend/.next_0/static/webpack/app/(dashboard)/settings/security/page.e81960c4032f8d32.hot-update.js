@@ -1,0 +1,192 @@
+   case \"forever\":\n      cachedValue = [{ value, valid: genTrue }];\n      cache.set(arg, cachedValue);\n      break;\n    case \"invalidate\":\n      cachedValue = [{ value, valid: config.validator() }];\n      cache.set(arg, cachedValue);\n      break;\n    case \"valid\":\n      if (cachedValue) {\n        cachedValue.push({ value, valid: config.validator() });\n      } else {\n        cachedValue = [{ value, valid: config.validator() }];\n        cache.set(arg, cachedValue);\n      }\n  }\n}\n\nclass CacheConfigurator<SideChannel = void> {\n  _active: boolean = true;\n  _never: boolean = false;\n  _forever: boolean = false;\n  _invalidate: boolean = false;\n\n  _configured: boolean = false;\n\n  _pairs: Array<\n    [cachedValue: unknown, handler: (data: SideChannel) => Handler<unknown>]\n  > = [];\n\n  _data: SideChannel;\n\n  constructor(data: SideChannel) {\n    this._data = data;\n  }\n\n  simple() {\n    return makeSimpleConfigurator(this);\n  }\n\n  mode() {\n    if (this._never) return \"never\";\n    if (this._forever) return \"forever\";\n    if (this._invalidate) return \"invalidate\";\n    return \"valid\";\n  }\n\n  forever() {\n    if (!this._active) {\n      throw new Error(\"Cannot change caching after evaluation has completed.\");\n    }\n    if (this._never) {\n      throw new Error(\"Caching has already been configured with .never()\");\n    }\n    this._forever = true;\n    this._configured = true;\n  }\n\n  never() {\n    if (!this._active) {\n      throw new Error(\"Cannot change caching after evaluation has completed.\");\n    }\n    if (this._forever) {\n      throw new Error(\"Caching has already been configured with .forever()\");\n    }\n    this._never = true;\n    this._configured = true;\n  }\n\n  using<T>(handler: (data: SideChannel) => T): T {\n    if (!this._active) {\n      throw new Error(\"Cannot change caching after evaluation has completed.\");\n    }\n    if (this._never || this._forever) {\n      throw new Error(\n        \"Caching has already been configured with .never or .forever()\",\n      );\n    }\n    this._configured = true;\n\n    const key = handler(this._data);\n\n    const fn = maybeAsync(\n      handler,\n      `You appear to be using an async cache handler, but Babel has been called synchronously`,\n    );\n\n    if (isThenable(key)) {\n      // @ts-expect-error todo(flow->ts): improve function return type annotation\n      return key.then((key: unknown) => {\n        this._pairs.push([key, fn]);\n        return key;\n      });\n    }\n\n    this._pairs.push([key, fn]);\n    return key;\n  }\n\n  invalidate<T>(handler: (data: SideChannel) => T): T {\n    this._invalidate = true;\n    return this.using(handler);\n  }\n\n  validator(): (data: SideChannel) => Handler<boolean> {\n    const pairs = this._pairs;\n    return function* (data: SideChannel) {\n      for (const [key, fn] of pairs) {\n        if (key !== (yield* fn(data))) return false;\n      }\n      return true;\n    };\n  }\n\n  deactivate() {\n    this._active = false;\n  }\n\n  configured() {\n    return this._configured;\n  }\n}\n\nfunction makeSimpleConfigurator(\n  cache: CacheConfigurator<any>,\n): SimpleCacheConfigurator {\n  function cacheFn(val: any) {\n    if (typeof val === \"boolean\") {\n      if (val) cache.forever();\n      else cache.never();\n      return;\n    }\n\n    return cache.using(() => assertSimpleType(val()));\n  }\n  cacheFn.forever = () => cache.forever();\n  cacheFn.never = () => cache.never();\n  cacheFn.using = (cb: () => SimpleType) =>\n    cache.using(() => assertSimpleType(cb()));\n  cacheFn.invalidate = (cb: () => SimpleType) =>\n    cache.invalidate(() => assertSimpleType(cb()));\n\n  return cacheFn as any;\n}\n\n// Types are limited here so that in the future these values can be used\n// as part of Babel's caching logic.\nexport type SimpleType =\n  | string\n  | boolean\n  | number\n  | null\n  | void\n  | Promise<SimpleType>;\nexport function assertSimpleType(value: unknown): SimpleType {\n  if (isThenable(value)) {\n    throw new Error(\n      `You appear to be using an async cache handler, ` +\n        `which your current version of Babel does not support. ` +\n        `We may add support for this in the future, ` +\n        `but if you're on the most recent version of @babel/core and still ` +\n        `seeing this error, then you'll need to synchronously handle your caching logic.`,\n    );\n  }\n\n  if (\n    value != null &&\n    typeof value !== \"string\" &&\n    typeof value !== \"boolean\" &&\n    typeof value !== \"number\"\n  ) {\n    throw new Error(\n      \"Cache keys must be either string, boolean, number, null, or undefined.\",\n    );\n  }\n  // @ts-expect-error Type 'unknown' is not assignable to type 'SimpleType'. This can be removed\n  // when strictNullCheck is enabled\n  return value;\n}\n\nclass Lock<T> {\n  released: boolean = false;\n  promise: Promise<T>;\n  _resolve: (value: T) => void;\n\n  constructor() {\n    this.promise = new Promise(resolve => {\n      this._resolve = resolve;\n    });\n  }\n\n  release(value: T) {\n    this.released = true;\n    this._resolve(value);\n  }\n}\n"],"mappings":"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","ignoreList":[]}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var picocolors = require('picocolors');
+var jsTokens = require('js-tokens');
+var helperValidatorIdentifier = require('@babel/helper-validator-identifier');
+
+function isColorSupported() {
+  return (typeof process === "object" && (process.env.FORCE_COLOR === "0" || process.env.FORCE_COLOR === "false") ? false : picocolors.isColorSupported
+  );
+}
+const compose = (f, g) => v => f(g(v));
+function buildDefs(colors) {
+  return {
+    keyword: colors.cyan,
+    capitalized: colors.yellow,
+    jsxIdentifier: colors.yellow,
+    punctuator: colors.yellow,
+    number: colors.magenta,
+    string: colors.green,
+    regex: colors.magenta,
+    comment: colors.gray,
+    invalid: compose(compose(colors.white, colors.bgRed), colors.bold),
+    gutter: colors.gray,
+    marker: compose(colors.red, colors.bold),
+    message: compose(colors.red, colors.bold),
+    reset: colors.reset
+  };
+}
+const defsOn = buildDefs(picocolors.createColors(true));
+const defsOff = buildDefs(picocolors.createColors(false));
+function getDefs(enabled) {
+  return enabled ? defsOn : defsOff;
+}
+
+const sometimesKeywords = new Set(["as", "async", "from", "get", "of", "set"]);
+const NEWLINE$1 = /\r\n|[\n\r\u2028\u2029]/;
+const BRACKET = /^[()[\]{}]$/;
+let tokenize;
+{
+  const JSX_TAG = /^[a-z][\w-]*$/i;
+  const getTokenType = function (token, offset, text) {
+    if (token.type === "name") {
+      if (helperValidatorIdentifier.isKeyword(token.value) || helperValidatorIdentifier.isStrictReservedWord(token.value, true) || sometimesKeywords.has(token.value)) {
+        return "keyword";
+      }
+      if (JSX_TAG.test(token.value) && (text[offset - 1] === "<" || text.slice(offset - 2, offset) === "</")) {
+        return "jsxIdentifier";
+      }
+      if (token.value[0] !== token.value[0].toLowerCase()) {
+        return "capitalized";
+      }
+    }
+    if (token.type === "punctuator" && BRACKET.test(token.value)) {
+      return "bracket";
+    }
+    if (token.type === "invalid" && (token.value === "@" || token.value === "#")) {
+      return "punctuator";
+    }
+    return token.type;
+  };
+  tokenize = function* (text) {
+    let match;
+    while (match = jsTokens.default.exec(text)) {
+      const token = jsTokens.matchToToken(match);
+      yield {
+        type: getTokenType(token, match.index, text),
+        value: token.value
+      };
+    }
+  };
+}
+function highlight(text) {
+  if (text === "") return "";
+  const defs = getDefs(true);
+  let highlighted = "";
+  for (const {
+    type,
+    value
+  } of tokenize(text)) {
+    if (type in defs) {
+      highlighted += value.split(NEWLINE$1).map(str => defs[type](str)).join("\n");
+    } else {
+      highlighted += value;
+    }
+  }
+  return highlighted;
+}
+
+let deprecationWarningShown = false;
+const NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
+function getMarkerLines(loc, source, opts) {
+  const startLoc = Object.assign({
+    column: 0,
+    line: -1
+  }, loc.start);
+  const endLoc = Object.assign({}, startLoc, loc.end);
+  const {
+    linesAbove = 2,
+    linesBelow = 3
+  } = opts || {};
+  const startLine = startLoc.line;
+  const startColumn = startLoc.column;
+  const endLine = endLoc.line;
+  const endColumn = endLoc.column;
+  let start = Math.max(startLine - (linesAbove + 1), 0);
+  let end = Math.min(source.length, endLine + linesBelow);
+  if (startLine === -1) {
+    start = 0;
+  }
+  if (endLine === -1) {
+    end = source.length;
+  }
+  const lineDiff = endLine - startLine;
+  const markerLines = {};
+  if (lineDiff) {
+    for (let i = 0; i <= lineDiff; i++) {
+      const lineNumber = i + startLine;
+      if (!startColumn) {
+        markerLines[lineNumber] = true;
+      } else if (i === 0) {
+        const sourceLength = source[lineNumber - 1].length;
+        markerLines[lineNumber] = [startColumn, sourceLength - startColumn + 1];
+      } else if (i === lineDiff) {
+        markerLines[lineNumber] = [0, endColumn];
+      } else {
+        const sourceLength = source[lineNumber - i].length;
+        markerLines[lineNumber] = [0, sourceLength];
+      }
+    }
+  } else {
+    if (startColumn === endColumn) {
+      if (startColumn) {
+        markerLines[startLine] = [startColumn, 0];
+      } else {
+        markerLines[startLine] = true;
+      }
+    } else {
+      markerLines[startLine] = [startColumn, endColumn - startColumn];
+    }
+  }
+  return {
+    start,
+    end,
+    markerLines
+  };
+}
+function codeFrameColumns(rawLines, loc, opts = {}) {
+  const shouldHighlight = opts.forceColor || isColorSupported() && opts.highlightCode;
+  const defs = getDefs(shouldHighlight);
+  const lines = rawLines.split(NEWLINE);
+  const {
+    start,
+    end,
+    markerLines
+  } = getMarkerLines(loc, lines, opts);
+  const hasColumns = loc.start && typeof loc.start.column === "number";
+  const numberMaxWidth = String(end).length;
+  const highlightedLines = shouldHighlight ? highlight(rawLines) : rawLines;
+  let frame = highlightedLines.split(NEWLINE, end).slice(start, end).map((line, index) => {
+    const number = start + 1 + index;
+    const paddedNumber = ` ${number}`.slice(-numberMaxWidth);
+    const gutter = ` ${paddedNumber} |`;
+    const hasMarker = markerLines[number];
+    const lastMarkerLine = !markerLines[number + 1];
+    if (hasMarker) {
+      let markerLine = "";
+      if (Array.isArray(hasMarker)) {
+        const markerSpacing = line.slice(0, Math.max(hasMarker[0] - 1, 0)).replace(/[^\t]/g, " ");
+        const numberOfMarkers = hasMarker[1] || 1;
+        markerLine = ["\n ", defs.gutter(gutter.replace(/\d/g, " ")), " ", markerSpacing, defs.marker("^").repeat(numberOfMarkers)].join("");
+        if (lastMarkerLine && opts.message) {
+          markerLine += " " + defs.message(opts.message);
+        }
+      }
+      return [defs.marker(">"), defs.gutter(gutter), line.length > 0 ? ` ${line}` : "", markerLine].join("");
+    } else {
+      return ` ${defs.gutter(gutter)}${line.length > 0 ? ` ${line}` : ""}`;
+    }
+  }).join("\n");
+  if (opts.message && !hasColumns) {
+    frame = `${" ".repeat(numberMaxWidth + 1)}${opts.message}\n${frame}`;
+  }
+  if (shouldHighlight) {
+    return defs.reset(frame);
+  } else {
+    return frame;
+  }
+}
+function index (rawLines, lineNumber, colNumber, opts = {}) {
+  if (!dep

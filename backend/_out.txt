@@ -1,0 +1,3 @@
+[auth] Google OAuth enabled
+Server on port 5000 (development)
+MySQL: localhost:3306/saas_db

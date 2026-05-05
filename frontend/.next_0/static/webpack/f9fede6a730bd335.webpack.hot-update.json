@@ -1,0 +1,18 @@
+t = endIndex - (U32)dictSize;
+        streamPtr->dictStart = streamPtr->prefixStart;
+        if (streamPtr->nextToUpdate < streamPtr->dictLimit)
+            streamPtr->nextToUpdate = streamPtr->dictLimit;
+    }
+    return dictSize;
+}
+
+
+/***************************************************
+*  Deprecated Functions
+***************************************************/
+
+/* These functions currently generate deprecation warnings */
+
+/* Wrappers for deprecated compression functions */
+int LZ4_compressHC(const char* src, char* dst, int srcSize) { return LZ4_compress_HC (src, dst, srcSize, LZ4_compressBound(srcSize), 0); }
+int LZ4_compressHC_limitedOutput(const char* s

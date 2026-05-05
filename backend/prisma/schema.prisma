@@ -1,0 +1,209 @@
+// AI Ads Generator SaaS — Auth & User Management (PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthProvider {
+  email
+  google
+  github
+}
+
+enum UserStatus {
+  active
+  suspended
+  unverified
+  deleted
+}
+
+enum PlanName {
+  free
+  starter
+  pro
+  agency
+}
+
+enum PlanStatus {
+  active
+  cancelled
+  past_due
+  trialing
+  paused
+}
+
+enum AuditAction {
+  user_registered
+  user_login
+  user_logout
+  user_logout_all_devices
+  password_changed
+  password_reset_requested
+  password_reset_completed
+  email_verified
+  email_change_requested
+  email_changed
+  oauth_connected
+  oauth_disconnected
+  profile_updated
+  account_suspended
+  account_deleted
+  account_restored
+  plan_upgraded
+  plan_downgraded
+  plan_cancelled
+  credits_purchased
+  credits_deducted
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+
+  email         String  @unique @db.VarChar(255)
+  full_name     String? @db.VarChar(100)
+  avatar_url    String? @db.Text
+
+  auth_provider AuthProvider @default(email)
+
+  password_hash String? @db.Text
+
+  google_id String? @unique @db.VarChar(255)
+
+  email_verified       Boolean   @default(false)
+  email_verify_token   String?   @unique @db.VarChar(255)
+  email_verify_expires DateTime? @db.Timestamptz(3)
+  pending_email        String?   @db.VarChar(255)
+
+  reset_token         String?   @unique @db.VarChar(255)
+  reset_token_expires DateTime? @db.Timestamptz(3)
+
+  timezone String @default("UTC") @db.VarChar(50)
+  locale   String @default("en")  @db.VarChar(10)
+
+  status UserStatus @default(unverified)
+
+  last_login_at DateTime? @db.Timestamptz(3)
+  last_login_ip String?   @db.VarChar(45)
+
+  deleted_at DateTime? @db.Timestamptz(3)
+
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  updated_at DateTime @updatedAt @db.Timestamptz(3)
+
+  plan           UserPlan?
+  sessions       UserSession[]
+  oauth_accounts OauthAccount[]
+  audit_logs     AuditLog[]
+
+  @@map("users")
+  @@index([email])
+  @@index([google_id])
+  @@index([status])
+  @@index([deleted_at])
+}
+
+model UserPlan {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id String @unique @db.Uuid
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  plan_name PlanName   @default(free)
+  status    PlanStatus @default(active)
+
+  credits_total Int @default(5)
+  credits_used  Int @default(0)
+
+  current_period_start DateTime? @db.Timestamptz(3)
+  current_period_end   DateTime? @db.Timestamptz(3)
+
+  stripe_customer_id     String? @unique @db.VarChar(255)
+  stripe_subscription_id String? @unique @db.VarChar(255)
+  stripe_price_id        String? @db.VarChar(255)
+
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  updated_at DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("user_plans")
+  @@index([user_id])
+  @@index([plan_name])
+  @@index([stripe_customer_id])
+  @@index([stripe_subscription_id])
+}
+
+model UserSession {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id String @db.Uuid
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  refresh_token    String @unique @db.VarChar(500)
+  access_token_jti String @unique @db.VarChar(255)
+
+  device_info String? @db.VarChar(500)
+  ip_address  String? @db.VarChar(45)
+
+  is_active  Boolean  @default(true)
+  expires_at DateTime @db.Timestamptz(3)
+
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("user_sessions")
+  @@index([user_id])
+  @@index([refresh_token])
+  @@index([is_active])
+  @@index([expires_at])
+}
+
+model OauthAccount {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id String @db.Uuid
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  provider           String @db.VarChar(50)
+  provider_user_id   String @db.VarChar(255)
+
+  access_token     String?   @db.Text
+  refresh_token    String?   @db.Text
+  token_expires_at DateTime? @db.Timestamptz(3)
+
+  raw_profile String? @db.Text
+
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  updated_at DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([user_id, provider])
+  @@unique([provider, provider_user_id])
+  @@map("oauth_accounts")
+  @@index([user_id])
+  @@index([provider])
+}
+
+model AuditLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id String? @db.Uuid
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  action      AuditAction
+  entity_type String? @db.VarChar(100)
+  entity_id   String? @db.VarChar(255)
+
+  ip_address String? @db.VarChar(45)
+  user_agent String? @db.VarChar(500)
+
+  metadata String? @db.Text
+
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("audit_logs")
+  @@index([user_id])
+  @@index([action])
+  @@index([created_at])
+  @@index([entity_type, entity_id])
+}
