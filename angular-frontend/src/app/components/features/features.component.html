@@ -1,0 +1,62 @@
+<section class="landing-section" id="features">
+  <div class="landing-container">
+    <h2 class="landing-section__title text-center" appAnimateOnScroll>
+      Everything you need to run winning ad campaigns
+    </h2>
+    <p class="landing-section__subtitle text-center" appAnimateOnScroll [appAnimateOnScrollDelay]="80">
+      One platform. All ad formats. Powered by AI.
+    </p>
+
+    <div class="feat-grid">
+      @for (f of items; track f.title; let i = $index) {
+        <article class="feat card-dark" appAnimateOnScroll [appAnimateOnScrollDelay]="i * 100">
+          @if (f.badge) {
+            <span class="feat__badge">{{ f.badge }}</span>
+          }
+          <div class="feat__icon" aria-hidden="true">
+            @switch (i) {
+              @case (0) {
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M4 20h16M6 16h8M8 12h4M10 8h2" stroke-linecap="round" />
+                </svg>
+              }
+              @case (1) {
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <circle cx="8.5" cy="10.5" r="1.5" />
+                  <path d="M21 19l-5-5" stroke-linecap="round" />
+                </svg>
+              }
+              @case (2) {
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              }
+              @case (3) {
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path
+                    d="M12 11c-1.5-2-4-2.5-6-1M12 13c1.5 2 4 2.5 6 1M12 3v18"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              }
+              @case (4) {
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="4" y="4" width="16" height="16" rx="2" />
+                  <path d="M4 9h16M9 4v16" stroke-linecap="round" />
+                </svg>
+              }
+              @default {
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M3 7h5l2 3h11v9a2 2 0 01-2 2H8a2 2 0 01-2-2V7z" stroke-linejoin="round" />
+                </svg>
+              }
+            }
+          </div>
+          <h3 class="feat__title">{{ f.title }}</h3>
+          <p class="feat__body">{{ f.body }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>

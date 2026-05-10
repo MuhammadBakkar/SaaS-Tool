@@ -1,0 +1,58 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <h1 class="auth__title">Sign in</h1>
+    <p class="auth__sub">AI Ads Generator</p>
+    <div class="auth__body">
+      <a class="google" [href]="googleHref()">
+        <i class="fa-brands fa-google google__icon" aria-hidden="true"></i>
+        Continue with Google
+      </a>
+      <div class="auth__divider"><span>or</span></div>
+      <form (ngSubmit)="submit()" class="form">
+        <label class="field">
+          <span>Email</span>
+          <input type="email" name="email" [(ngModel)]="email" autocomplete="email" required />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <div class="input-wrap">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-pw"
+              (click)="showPassword.set(!showPassword())"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            >
+              <i
+                class="fa-solid"
+                [class.fa-eye]="!showPassword()"
+                [class.fa-eye-slash]="showPassword()"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+        </label>
+        <div class="row">
+          <label class="remember">
+            <input type="checkbox" [(ngModel)]="rememberMe" name="remember" />
+            Remember me
+          </label>
+          <a routerLink="/forgot-password" class="link">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn" [disabled]="submitting()">
+          {{ submitting() ? 'Signing in…' : 'Sign in' }}
+        </button>
+      </form>
+    </div>
+    <p class="auth__footer">
+      No account?
+      <a routerLink="/register" class="link">Register</a>
+    </p>
+  </div>
+</div>

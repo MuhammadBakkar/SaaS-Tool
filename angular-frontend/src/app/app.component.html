@@ -7,7 +7,12 @@
 }
 <div class="toast-stack" aria-live="polite">
   @for (t of toast.messages(); track t.id) {
-    <div class="toast" [class.toast--success]="t.kind === 'success'" [class.toast--error]="t.kind === 'error'">
+    <div
+      class="toast"
+      [class.toast--success]="t.kind === 'success'"
+      [class.toast--error]="t.kind === 'error'"
+      [class.toast--info]="t.kind === 'info'"
+    >
       {{ t.text }}
       <button type="button" class="toast__close" (click)="toast.dismiss(t.id)" aria-label="Dismiss">×</button>
     </div>

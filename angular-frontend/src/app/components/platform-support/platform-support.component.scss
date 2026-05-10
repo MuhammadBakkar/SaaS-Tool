@@ -1,0 +1,91 @@
+.platforms {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.platforms__viewport {
+  margin-top: 2rem;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.platforms__marquee {
+  display: flex;
+  gap: 0.75rem;
+  width: max-content;
+  @media (max-width: 767px) {
+    animation: marquee 26s linear infinite;
+  }
+  @media (min-width: 768px) {
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+    max-width: 100%;
+  }
+}
+
+.platforms__group {
+  display: flex;
+  gap: 0.75rem;
+  flex: 0 0 auto;
+  @media (min-width: 768px) {
+    &--dup {
+      display: none;
+    }
+  }
+}
+
+.platform-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.platform-pill__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  &--google {
+    background: conic-gradient(from 180deg at 50% 50%, #4285f4, #ea4335, #fbbc05, #34a853, #4285f4);
+    font-size: 11px;
+  }
+  &--meta {
+    background: #1877f2;
+    font-family: Georgia, serif;
+    font-weight: 700;
+  }
+  &--ig {
+    background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+    font-size: 14px;
+  }
+  &--li {
+    background: #0a66c2;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  &--tt {
+    background: linear-gradient(135deg, #25f4ee, #000 55%, #fe2c55);
+    font-size: 14px;
+  }
+  &--yt {
+    background: #ff0000;
+    font-size: 10px;
+    padding-left: 2px;
+  }
+}

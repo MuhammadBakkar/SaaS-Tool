@@ -1,0 +1,9 @@
+<div class="wrap">
+  @if (status() === 'idle') {
+    <p>Verifying your email…</p>
+  } @else if (status() === 'ok') {
+    <p class="ok">Email verified. Redirecting…</p>
+  } @else {
+    <p class="err">Invalid or expired token.</p>
+  }
+</div>

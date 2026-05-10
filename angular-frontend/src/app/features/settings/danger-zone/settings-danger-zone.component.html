@@ -1,0 +1,44 @@
+<div class="page">
+  <header class="page__head">
+    <h1>Danger zone</h1>
+    <p>Irreversible actions for your account.</p>
+  </header>
+  <div class="box">
+    <h2>Delete account</h2>
+    <p>This will permanently delete your account and associated data. This action cannot be undone.</p>
+    <button type="button" class="btn-danger" (click)="modalOpen.set(true)">Delete my account</button>
+  </div>
+  @if (modalOpen()) {
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal__backdrop" (click)="modalOpen.set(false)"></div>
+      <div class="modal__panel">
+        <h3>Delete your account</h3>
+        <p class="warn">This permanently deletes your account and data. This cannot be undone.</p>
+        @if (profile(); as prof) {
+          @if (prof.auth_provider === 'google') {
+            <label class="field">
+              <span>Type DELETE to confirm</span>
+              <input [(ngModel)]="confirmText" name="ct" autocomplete="off" class="mono" />
+            </label>
+          } @else {
+            <label class="field">
+              <span>Enter your password to confirm</span>
+              <input type="password" [(ngModel)]="password" name="pw" autocomplete="current-password" />
+            </label>
+          }
+        }
+        <div class="modal__actions">
+          <button type="button" class="btn-muted" (click)="modalOpen.set(false)">Cancel</button>
+          <button
+            type="button"
+            class="btn-go"
+            [disabled]="busy() || !canSubmit()"
+            (click)="submitDelete()"
+          >
+            {{ busy() ? 'Deleting…' : 'Delete account' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

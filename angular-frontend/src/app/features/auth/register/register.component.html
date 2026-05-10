@@ -1,0 +1,102 @@
+@if (sent()) {
+  <div class="auth-shell">
+    <div class="auth-card auth-card--narrow">
+      <h1 class="auth__title">Check your email</h1>
+      <p class="auth__sub auth__sub--multiline">
+        We sent a verification link. Open it to activate your account, then sign in.
+      </p>
+      <a routerLink="/auth/login" class="btn btn--block">Back to login</a>
+    </div>
+  </div>
+} @else {
+  <div class="auth-shell">
+    <div class="auth-card">
+      <h1 class="auth__title">Create account</h1>
+      <p class="auth__sub">AI Ads Generator</p>
+      <div class="auth__body">
+        <a class="google" [href]="googleHref()">
+          <i class="fa-brands fa-google google__icon" aria-hidden="true"></i>
+          Continue with Google
+        </a>
+        <div class="auth__divider"><span>or</span></div>
+        <form (ngSubmit)="submit()" class="form">
+          <label class="field">
+            <span>Full name</span>
+            <input type="text" name="full_name" [(ngModel)]="fullName" autocomplete="name" required minlength="2" />
+          </label>
+          <label class="field">
+            <span>Email</span>
+            <input type="email" name="email" [(ngModel)]="email" autocomplete="email" required />
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <div class="input-wrap">
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                name="password"
+                [(ngModel)]="password"
+                autocomplete="new-password"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-pw"
+                (click)="showPassword.set(!showPassword())"
+                [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+              >
+                <i
+                  class="fa-solid" 
+                  [class.fa-eye]="!showPassword()"
+                  [class.fa-eye-slash]="showPassword()"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
+          </label>
+          @if (password.length > 0 && pwErrors().length) {
+            <ul class="hints">
+              @for (e of pwErrors(); track e) {
+                <li>{{ e }}</li>
+              }
+            </ul>
+          }
+          <label class="field">
+            <span>Confirm password</span>
+            <div class="input-wrap">
+              <input
+                [type]="showConfirmPassword() ? 'text' : 'password'"
+                name="confirm"
+                [(ngModel)]="confirmPassword"
+                autocomplete="new-password"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-pw"
+                (click)="showConfirmPassword.set(!showConfirmPassword())"
+                [attr.aria-label]="showConfirmPassword() ? 'Hide confirm password' : 'Show confirm password'"
+              >
+                <i
+                  class="fa-solid"
+                  [class.fa-eye]="!showConfirmPassword()"
+                  [class.fa-eye-slash]="showConfirmPassword()"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
+          </label>
+          @if (confirmPassword.length > 0 && password !== confirmPassword) {
+            <p class="err">Passwords do not match</p>
+          }
+          <button type="submit" class="btn" [disabled]="submitting() || !canSubmit()">
+            {{ submitting() ? 'Creating…' : 'Create account' }}
+          </button>
+        </form>
+      </div>
+      <p class="auth__footer">
+        Already have an account?
+        <a routerLink="/auth/login" class="link">Sign in</a>
+      </p>
+    </div>
+  </div>
+}

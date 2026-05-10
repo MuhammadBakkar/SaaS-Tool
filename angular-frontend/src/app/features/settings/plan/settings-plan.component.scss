@@ -1,0 +1,84 @@
+.page__head h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.page__head p {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #52525b;
+}
+
+.grid {
+  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+h3 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #71717a;
+  margin: 0 0 0.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: #e4e4e7;
+  color: #27272a;
+}
+
+.badge--agency {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.badge--pro {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+.badge--starter {
+  background: #cffafe;
+  color: #155e75;
+}
+
+.bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #e4e4e7;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.bar__fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: #10b981;
+}
+
+.bar__fill.warn {
+  background: #f59e0b;
+}
+
+.muted {
+  color: #52525b;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
+}
+
+.small {
+  font-size: 0.875rem;
+}
+
+.dark {
+  color: #18181b;
+}

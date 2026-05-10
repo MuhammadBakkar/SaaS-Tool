@@ -1,0 +1,15 @@
+<div class="dash">
+  <h1>Dashboard</h1>
+  <p class="muted">
+    Signed in as <strong>{{ auth.user()?.email }}</strong>
+  </p>
+  @if (auth.user()?.plan; as plan) {
+    <p class="muted">
+      Plan: {{ plan.plan_name }} — credits {{ plan.credits_used }}/{{ plan.credits_total }}
+    </p>
+  }
+  <div class="actions">
+    <a routerLink="/settings/profile" class="btn btn--primary">Account settings</a>
+    <a routerLink="/" class="btn btn--outline">Home</a>
+  </div>
+</div>

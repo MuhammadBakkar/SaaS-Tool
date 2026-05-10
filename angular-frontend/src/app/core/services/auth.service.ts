@@ -7,13 +7,11 @@ import { unwrapEnvelope } from '../models/api.types';
 import { TokenStorageService } from './token-storage.service';
 import { ToastService } from './toast.service';
 import { SessionStateService } from './session-state.service';
-import { SKIP_ERROR_TOAST, SKIP_GLOBAL_LOADER, SKIP_SUCCESS_TOAST } from '../tokens';
+import { SKIP_ERROR_TOAST, SKIP_SUCCESS_TOAST } from '../tokens';
 
+/** Frequent `/auth/me` calls: no success/error toasts (loader still runs). */
 const meCtx = (): HttpContext =>
-  new HttpContext()
-    .set(SKIP_GLOBAL_LOADER, true)
-    .set(SKIP_SUCCESS_TOAST, true)
-    .set(SKIP_ERROR_TOAST, true);
+  new HttpContext().set(SKIP_SUCCESS_TOAST, true).set(SKIP_ERROR_TOAST, true);
 
 const verifyInflight = new Map<string, Promise<{ access_token: string; refresh_token: string }>>();
 
@@ -178,7 +176,7 @@ export class AuthService {
     this.session.clear();
     if (!options?.skipRedirect) {
       this.toast.success('You have been signed out.');
-      void this.router.navigateByUrl('/login');
+      void this.router.navigateByUrl('/auth/login');
     }
   }
 }

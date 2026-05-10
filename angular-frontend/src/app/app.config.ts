@@ -1,4 +1,5 @@
 import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
@@ -14,6 +15,7 @@ function initAuth(auth: AuthService): () => Promise<void> {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideAnimations(),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([apiInterceptor])),
     { provide: API_BASE_URL, useValue: environment.apiUrl },

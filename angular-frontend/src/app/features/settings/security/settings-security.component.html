@@ -1,0 +1,72 @@
+<div class="page">
+  <header class="page__head">
+    <h1>Security</h1>
+    <p>Password and active sessions.</p>
+  </header>
+  @if (loading()) {
+    <p class="muted">Loading…</p>
+  } @else {
+    @if (profile(); as p) {
+      <section>
+        <h2>Change password</h2>
+        @if (p.auth_provider === 'google') {
+          <p class="note">Your account uses Google Sign-In. Manage your password through Google.</p>
+        } @else {
+          <form (ngSubmit)="changePw()" class="form">
+            <label class="field">
+              <span>Current password</span>
+              <input type="password" [(ngModel)]="curPw" name="c" autocomplete="current-password" required />
+            </label>
+            <label class="field">
+              <span>New password</span>
+              <input type="password" [(ngModel)]="newPw" name="n" autocomplete="new-password" required />
+            </label>
+            @if (newPw.length > 0 && pwErrors().length) {
+              <ul class="hints">
+                @for (e of pwErrors(); track e) {
+                  <li>{{ e }}</li>
+                }
+              </ul>
+            }
+            <label class="field">
+              <span>Confirm</span>
+              <input type="password" [(ngModel)]="cfPw" name="f" autocomplete="new-password" required />
+            </label>
+            @if (cfPw.length > 0 && newPw !== cfPw) {
+              <p class="err">Passwords must match</p>
+            }
+            <button type="submit" class="btn" [disabled]="busy() || !canPw()">Update password</button>
+          </form>
+        }
+      </section>
+      <section>
+        <h2>Active sessions</h2>
+        @if (sessionsLoading()) {
+          <p class="muted">Loading sessions…</p>
+        } @else {
+          @if (otherSessions().length > 0) {
+            <button type="button" class="linkish" [disabled]="bulkBusy()" (click)="revokeAllOthers()">
+              {{ bulkBusy() ? 'Signing out…' : 'Sign out all other devices' }}
+            </button>
+          }
+          <ul class="sessions">
+            @for (s of sessions(); track s.id) {
+              <li>
+                <div>
+                  <strong>{{ s.device_info ?? 'Unknown device' }}</strong>
+                  <div class="meta">IP: {{ s.ip_address ?? '—' }}</div>
+                  @if (s.id === currentId()) {
+                    <span class="pill">This device</span>
+                  }
+                </div>
+                @if (s.id !== currentId()) {
+                  <button type="button" class="revoke" (click)="revokeOne(s.id)">Revoke</button>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+  }
+</div>

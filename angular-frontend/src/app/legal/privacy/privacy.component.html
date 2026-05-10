@@ -1,0 +1,88 @@
+<div class="legal-page">
+  <app-navbar />
+  <article class="legal-doc">
+    <h1 class="landing-section__title" style="margin-bottom: 0.5rem">Privacy Policy</h1>
+    <p class="legal-doc__meta">
+      Last updated: December 2024 · Contact:
+      <a [href]="privacyMailto">{{ privacyEmail }}</a>
+    </p>
+
+    <h2>1. Who we are</h2>
+    <p>
+      This Privacy Policy explains how AI Ads Generator (“we”, “us”) processes personal data when you use our website
+      and SaaS platform at aiadsgenerator.com (the “Service”).
+    </p>
+
+    <h2>2. Data we collect</h2>
+    <p>We may process:</p>
+    <ul>
+      <li><strong>Account data:</strong> email address, name, authentication identifiers.</li>
+      <li><strong>Usage data:</strong> product interactions, device/browser information, IP address, approximate location, logs.</li>
+      <li><strong>Brand and prompt data:</strong> information you provide as brand profiles, prompts, uploads, and generated outputs.</li>
+      <li><strong>Billing data:</strong> processed by Paddle; we receive limited billing status from Paddle.</li>
+    </ul>
+
+    <h2>3. How we use data</h2>
+    <p>We use personal data to:</p>
+    <ul>
+      <li>Provide, secure, and improve the Service.</li>
+      <li>Send transactional messages (e.g., verification, receipts) and optional product updates where permitted.</li>
+      <li>Provide AI features by sending relevant prompt and brand context to model providers as needed to generate results.</li>
+      <li>Comply with law and enforce our <a routerLink="/terms">Terms of Service</a>.</li>
+    </ul>
+
+    <h2>4. Legal bases (EEA/UK)</h2>
+    <p>
+      Where GDPR applies, we rely on performance of a contract, legitimate interests (e.g., security and product
+      improvement), consent where required (e.g., certain cookies/marketing), and legal obligation where applicable.
+    </p>
+
+    <h2>5. Storage and security</h2>
+    <p>
+      We implement appropriate technical and organizational measures, including encryption in transit and protections for
+      stored data. No method of transmission or storage is 100% secure.
+    </p>
+
+    <h2>6. Third-party services</h2>
+    <p>We use subprocessors including, as applicable:</p>
+    <ul>
+      <li><strong>Paddle</strong> — payment processing and subscription management.</li>
+      <li><strong>OpenAI</strong> (or other AI providers) — model inference for generation features.</li>
+      <li><strong>Cloudinary</strong> (or similar) — hosting and transformation of image assets you upload or generate.</li>
+      <li><strong>Hosting and analytics providers</strong> — infrastructure and limited analytics.</li>
+    </ul>
+    <p>These providers process data under their terms and as instructed by us.</p>
+
+    <h2>7. International transfers</h2>
+    <p>
+      If we transfer personal data outside your country, we use appropriate safeguards such as Standard Contractual
+      Clauses where required.
+    </p>
+
+    <h2>8. Retention</h2>
+    <p>
+      We retain data as long as needed to provide the Service and for legitimate business purposes (e.g., security,
+      legal compliance). You may request deletion subject to legal exceptions.
+    </p>
+
+    <h2>9. Your rights</h2>
+    <p>
+      Depending on your location, you may have rights to access, rectify, delete, restrict, object, port data, and
+      withdraw consent. You may lodge a complaint with your supervisory authority. Contact
+      <a [href]="privacyMailto">{{ privacyEmail }}</a> to exercise rights.
+    </p>
+
+    <h2>10. Cookies</h2>
+    <p>
+      We use essential cookies for authentication and security, and may use analytics or preference cookies as
+      described in our cookie notice. Where required, we obtain consent before non-essential cookies.
+    </p>
+
+    <h2>11. Children</h2>
+    <p>The Service is not directed to children under 16, and we do not knowingly collect their personal data.</p>
+
+    <h2>12. Changes</h2>
+    <p>We may update this policy by posting a revised version and updating the “Last updated” date.</p>
+  </article>
+  <app-footer />
+</div>

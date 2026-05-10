@@ -1,0 +1,32 @@
+<section class="landing-section">
+  <div class="landing-container">
+    <h2 class="landing-section__title text-center" appAnimateOnScroll>Loved by marketers worldwide</h2>
+    <div class="test-grid">
+      @for (t of items; track t.name; let i = $index) {
+        <article
+          class="test card-dark"
+          appAnimateOnScroll
+          [appAnimateOnScrollDelay]="i * 120"
+          [appAnimateOnScrollDirection]="i === 1 ? 'up' : i === 0 ? 'right' : 'left'"
+        >
+          <div class="test__quote" aria-hidden="true">“</div>
+          <p class="test__text">{{ t.quote }}</p>
+          <div class="test__stars">★★★★★</div>
+          <div class="test__who">
+            <span
+              class="test__avatar"
+              [class.test__avatar--teal]="t.tone === 'teal'"
+              [class.test__avatar--purple]="t.tone === 'purple'"
+              [class.test__avatar--blue]="t.tone === 'blue'"
+              >{{ t.initials }}</span
+            >
+            <div>
+              <div class="test__name">{{ t.name }}</div>
+              <div class="test__role muted">{{ t.role }}</div>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

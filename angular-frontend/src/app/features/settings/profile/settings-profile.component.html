@@ -1,0 +1,54 @@
+<div class="page">
+  <header class="page__head">
+    <h1>Profile</h1>
+    <p>Photo and display preferences.</p>
+  </header>
+  @if (loading()) {
+    <p class="muted">Loading…</p>
+  } @else {
+    @if (profile(); as p) {
+      <section>
+        <h2>Profile photo</h2>
+        @if (p.avatar_url) {
+          <img [src]="p.avatar_url" alt="" class="avatar" width="96" height="96" />
+        }
+        <div class="row">
+          <input type="file" accept="image/*" (change)="onFile($event)" />
+          @if (p.avatar_url) {
+            <button type="button" class="linkish" (click)="removeAvatar()" [disabled]="busy()">Remove</button>
+          }
+        </div>
+      </section>
+      <section>
+        <h2>Details</h2>
+        <form (ngSubmit)="saveProfile()" class="form">
+          <label class="field">
+            <span>Full name</span>
+            <input type="text" [(ngModel)]="fullName" name="fn" required minlength="2" />
+          </label>
+          <label class="field">
+            <span>Timezone</span>
+            <select [(ngModel)]="timezone" name="tz">
+              @for (z of timezones; track z) {
+                <option [value]="z">{{ z }}</option>
+              }
+            </select>
+          </label>
+          <label class="field">
+            <span>Locale</span>
+            <select [(ngModel)]="locale" name="loc">
+              <option value="en">en</option>
+              <option value="ur">ur</option>
+              <option value="ar">ar</option>
+              <option value="fr">fr</option>
+              <option value="de">de</option>
+              <option value="es">es</option>
+              <option value="hi">hi</option>
+            </select>
+          </label>
+          <button type="submit" class="btn" [disabled]="busy()">Save</button>
+        </form>
+      </section>
+    }
+  }
+</div>

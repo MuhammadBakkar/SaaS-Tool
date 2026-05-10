@@ -1,0 +1,43 @@
+<section class="landing-section platforms">
+  <div class="landing-container">
+    <h2 class="landing-section__title text-center" appAnimateOnScroll>Works with every major ad platform</h2>
+
+    <div class="platforms__viewport">
+      <div class="platforms__marquee">
+        <div class="platforms__group">
+          <ng-container *ngTemplateOutlet="pills" />
+        </div>
+        <div class="platforms__group platforms__group--dup" aria-hidden="true">
+          <ng-container *ngTemplateOutlet="pills" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #pills>
+  <div class="platform-pill">
+    <span class="platform-pill__icon platform-pill__icon--google" aria-hidden="true">G</span>
+    Google Ads
+  </div>
+  <div class="platform-pill">
+    <span class="platform-pill__icon platform-pill__icon--meta" aria-hidden="true">f</span>
+    Meta / Facebook
+  </div>
+  <div class="platform-pill">
+    <span class="platform-pill__icon platform-pill__icon--ig" aria-hidden="true">◎</span>
+    Instagram
+  </div>
+  <div class="platform-pill">
+    <span class="platform-pill__icon platform-pill__icon--li" aria-hidden="true">in</span>
+    LinkedIn
+  </div>
+  <div class="platform-pill">
+    <span class="platform-pill__icon platform-pill__icon--tt" aria-hidden="true">♪</span>
+    TikTok
+  </div>
+  <div class="platform-pill">
+    <span class="platform-pill__icon platform-pill__icon--yt" aria-hidden="true">▶</span>
+    YouTube
+  </div>
+</ng-template>

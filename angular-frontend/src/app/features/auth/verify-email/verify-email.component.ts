@@ -5,32 +5,8 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  template: `
-    <div class="wrap">
-      @if (status() === 'idle') {
-        <p>Verifying your email…</p>
-      } @else if (status() === 'ok') {
-        <p class="ok">Email verified. Redirecting…</p>
-      } @else {
-        <p class="err">Invalid or expired token.</p>
-      }
-    </div>
-  `,
-  styles: `
-    .wrap {
-      max-width: 24rem;
-      margin: 3rem auto;
-      padding: 1rem;
-      font-size: 0.875rem;
-      color: #52525b;
-    }
-    .ok {
-      color: #166534;
-    }
-    .err {
-      color: #b91c1c;
-    }
-  `,
+  templateUrl: './verify-email.component.html',
+  styleUrl: './verify-email.component.scss',
 })
 export class VerifyEmailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

@@ -1,0 +1,13 @@
+<div class="page">
+  <h1>Verify email change</h1>
+  @if (status() === 'idle') {
+    <p class="muted">Confirming your new email…</p>
+  } @else if (status() === 'ok') {
+    <p class="ok">Email updated. Redirecting…</p>
+  } @else {
+    <p class="err">
+      Invalid or expired link. Please request a new email change from
+      <a routerLink="/settings/email">Email settings</a>.
+    </p>
+  }
+</div>

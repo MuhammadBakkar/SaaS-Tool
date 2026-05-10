@@ -1,0 +1,26 @@
+<div class="settings">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/dashboard" class="settings__crumb">Dashboard</a>
+    <span class="settings__sep">/</span>
+    <span class="settings__crumb settings__crumb--muted">Settings</span>
+  </nav>
+  <div class="settings__grid">
+    <aside class="settings__aside" aria-label="Settings">
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="settings__side--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="settings__side"
+          [class.settings__side--danger]="item.danger"
+        >
+          <span aria-hidden="true">{{ item.emoji }}</span>
+          {{ item.label }}
+        </a>
+      }
+    </aside>
+    <div class="settings__content">
+      <router-outlet />
+    </div>
+  </div>
+</div>

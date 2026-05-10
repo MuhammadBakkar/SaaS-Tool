@@ -1,0 +1,35 @@
+<div class="page">
+  <header class="page__head">
+    <h1>Plan</h1>
+    <p>Usage and billing (Stripe coming soon).</p>
+  </header>
+  @if (loading()) {
+    <p class="muted">Loading…</p>
+  } @else {
+    @if (profile(); as p) {
+      <div class="grid">
+        <div>
+          <h3>Current plan</h3>
+          <span class="badge" [class]="badgeClass(planName())">{{ planName() }}</span>
+        </div>
+        <div>
+          <h3>Credits</h3>
+          <p class="muted">{{ used() }} of {{ total() }} credits used ({{ pct() }}%)</p>
+          <div class="bar">
+            <div class="bar__fill" [class.warn]="pct() >= 80" [style.width.%]="pct()"></div>
+          </div>
+        </div>
+        <div class="muted small">
+          <p>
+            <strong class="dark">Resets on:</strong>
+            {{ formatDate(p.plan?.current_period_end ?? null) }}
+          </p>
+          <p>
+            <strong class="dark">Member since:</strong>
+            {{ formatDate(p.created_at) }}
+          </p>
+        </div>
+      </div>
+    }
+  }
+</div>

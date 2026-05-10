@@ -1,21 +1,15 @@
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { map, type Observable } from 'rxjs';
 import type { ApiEnvelope, SessionRow, UserPlanDetail, UserProfile } from '../models/api.types';
 import { unwrapEnvelope } from '../models/api.types';
-import { SKIP_ERROR_TOAST, SKIP_GLOBAL_LOADER, SKIP_SUCCESS_TOAST } from '../tokens';
-
-const silent = (): HttpContext =>
-  new HttpContext().set(SKIP_GLOBAL_LOADER, true).set(SKIP_SUCCESS_TOAST, true);
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly http = inject(HttpClient);
 
   getProfile(): Observable<UserProfile> {
-    return this.http
-      .get<ApiEnvelope<UserProfile>>('/users/me', { context: silent() })
-      .pipe(map((b) => unwrapEnvelope(b)));
+    return this.http.get<ApiEnvelope<UserProfile>>('/users/me').pipe(map((b) => unwrapEnvelope(b)));
   }
 
   updateProfile(data: { full_name?: string; timezone?: string; locale?: string }): Observable<UserProfile> {
@@ -49,9 +43,7 @@ export class UsersService {
   }
 
   getSessions(): Observable<SessionRow[]> {
-    return this.http
-      .get<ApiEnvelope<SessionRow[]>>('/users/me/sessions', { context: silent() })
-      .pipe(map((b) => unwrapEnvelope(b)));
+    return this.http.get<ApiEnvelope<SessionRow[]>>('/users/me/sessions').pipe(map((b) => unwrapEnvelope(b)));
   }
 
   revokeSession(sessionId: string): Observable<{ message: string }> {
@@ -73,20 +65,14 @@ export class UsersService {
   }
 
   verifyEmailChange(token: string): Observable<{ message: string }> {
-    const ctx = new HttpContext()
-      .set(SKIP_GLOBAL_LOADER, true)
-      .set(SKIP_SUCCESS_TOAST, true)
-      .set(SKIP_ERROR_TOAST, true);
     return this.http
-      .post<ApiEnvelope<{ message: string }>>('/users/me/verify-email-change', { token }, { context: ctx })
+      .post<ApiEnvelope<{ message: string }>>('/users/me/verify-email-change', { token })
       .pipe(map((b) => unwrapEnvelope(b)));
   }
 
   getPlanSummary(): Observable<{ plan: UserPlanDetail | null; created_at: string }> {
     return this.http
-      .get<ApiEnvelope<{ plan: UserPlanDetail | null; created_at: string }>>('/users/me/plan', {
-        context: silent(),
-      })
+      .get<ApiEnvelope<{ plan: UserPlanDetail | null; created_at: string }>>('/users/me/plan')
       .pipe(map((b) => unwrapEnvelope(b)));
   }
 

@@ -1,0 +1,51 @@
+<div class="legal-page">
+  <app-navbar />
+  <article class="legal-doc">
+    <h1 class="landing-section__title" style="margin-bottom: 0.5rem">Refund Policy</h1>
+    <p class="legal-doc__meta">
+      Last updated: December 2024 · Contact:
+      <a [href]="supportMailto">{{ supportEmail }}</a>
+    </p>
+
+    <h2>1. Money-back guarantee</h2>
+    <p>
+      We offer a <strong>14-day money-back guarantee</strong> on all paid subscription plans purchased directly
+      through AI Ads Generator (processed by Paddle). If you are not satisfied, contact us within 14 days of your
+      initial purchase to request a refund.
+    </p>
+
+    <h2>2. How to request a refund</h2>
+    <p>
+      Email <a [href]="supportMailto">{{ supportEmail }}</a> from the email address
+      associated with your account and include your Paddle order reference if available. We may ask reasonable
+      questions to verify your purchase.
+    </p>
+
+    <h2>3. What qualifies</h2>
+    <p>Refunds under this policy generally apply when:</p>
+    <ul>
+      <li>You request within 14 days of the initial paid subscription purchase, and</li>
+      <li>You have not engaged in abuse, chargeback fraud, or violation of our <a routerLink="/terms">Terms of Service</a>.</li>
+    </ul>
+    <p>Renewal charges are not covered by the 14-day introductory guarantee unless required by applicable law.</p>
+
+    <h2>4. Credits and add-ons</h2>
+    <p>
+      Credit packs and add-ons may be non-refundable after credits have been consumed or after the stated cooling-off
+      period under applicable law. Where a credit pack was not used, we may offer a refund at our discretion.
+    </p>
+
+    <h2>5. Processing time</h2>
+    <p>Approved refunds are typically processed within 5–10 business days. Timing may vary by payment method and bank.</p>
+
+    <h2>6. Chargebacks</h2>
+    <p>
+      Please contact us before initiating a chargeback so we can help. Chargebacks may result in account suspension and
+      may delay resolution.
+    </p>
+
+    <h2>7. Contact</h2>
+    <p>For refund questions, contact <a [href]="supportMailto">{{ supportEmail }}</a>.</p>
+  </article>
+  <app-footer />
+</div>

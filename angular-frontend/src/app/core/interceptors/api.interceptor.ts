@@ -37,6 +37,25 @@ function isAuthPublicPath(url: string): boolean {
   return paths.some((p) => url.includes(p));
 }
 
+/** JSON envelope returned with HTTP 200 but logical failure (unwrap would throw). */
+function isErrorEnvelope(body: unknown): boolean {
+  if (!body || typeof body !== 'object') return false;
+  const status = (body as { status?: unknown }).status;
+  return typeof status === 'number' && status >= 400;
+}
+
+function errorMessageFromHttp(err: HttpErrorResponse): string | null {
+  const e = err.error;
+  if (typeof e === 'string' && e.trim()) return e.trim();
+  if (e && typeof e === 'object' && e !== null) {
+    const msg = (e as { message?: unknown }).message;
+    if (typeof msg === 'string' && msg.trim()) return msg.trim();
+    if (Array.isArray(msg) && msg.length) return msg.map(String).join('; ');
+  }
+  if (err.message?.trim()) return err.message;
+  return null;
+}
+
 function mutexRefresh(
   rawHttp: HttpClient,
   baseUrl: string,
@@ -91,12 +110,26 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     tap({
       next: (ev) => {
         if (!(ev instanceof HttpResponse)) return;
-        const method = outbound.method.toUpperCase();
-        if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return;
+        const body = ev.body;
+        if (isErrorEnvelope(body)) {
+          if (!outbound.context.get(SKIP_ERROR_TOAST)) {
+            const msg =
+              body && typeof body === 'object' && 'message' in body
+                ? String((body as { message: unknown }).message ?? '').trim()
+                : null;
+            if (msg) toast.error(msg);
+          }
+          return;
+        }
         if (outbound.context.get(SKIP_SUCCESS_TOAST)) return;
-        const b = ev.body as { message?: string } | null;
-        if (b && typeof b.message === 'string' && b.message) {
-          toast.success(b.message);
+        if (!body || typeof body !== 'object' || !('message' in body)) return;
+        const msg = String((body as { message: unknown }).message ?? '').trim();
+        if (!msg) return;
+        const method = outbound.method.toUpperCase();
+        if (['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+          toast.info(msg);
+        } else {
+          toast.success(msg);
         }
       },
     }),
@@ -127,13 +160,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
             tokens.clearAll();
             session.clear();
             if (!outbound.context.get(SKIP_ERROR_TOAST)) {
-              const msg =
-                err.error &&
-                typeof err.error === 'object' &&
-                err.error !== null &&
-                'message' in err.error
-                  ? String((err.error as { message?: unknown }).message ?? err.message)
-                  : err.message;
+              const msg = errorMessageFromHttp(err);
               if (msg) toast.error(msg);
             }
             return throwError(() => err);
@@ -142,10 +169,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (!outbound.context.get(SKIP_ERROR_TOAST)) {
-        const msg =
-          err.error && typeof err.error === 'object' && err.error !== null && 'message' in err.error
-            ? String((err.error as { message?: unknown }).message ?? err.message)
-            : err.message;
+        const msg = errorMessageFromHttp(err);
         if (msg) toast.error(msg);
       }
       return throwError(() => err);

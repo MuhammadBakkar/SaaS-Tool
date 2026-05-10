@@ -1,0 +1,64 @@
+<section class="landing-section" id="pricing">
+  <div class="landing-container">
+    <h2 class="landing-section__title text-center" appAnimateOnScroll>Simple, transparent pricing</h2>
+    <p class="landing-section__subtitle text-center" appAnimateOnScroll [appAnimateOnScrollDelay]="60">
+      Start free. Upgrade when you're ready. No contracts.
+    </p>
+
+    <div class="pricing__toggle" appAnimateOnScroll [appAnimateOnScrollDelay]="100">
+      <button type="button" class="pricing__seg" [class.pricing__seg--active]="!yearly()" (click)="toggleYearly(false)">
+        Monthly
+      </button>
+      <button type="button" class="pricing__seg" [class.pricing__seg--active]="yearly()" (click)="toggleYearly(true)">
+        Yearly
+        <span class="pricing__save">20% off</span>
+      </button>
+    </div>
+
+    <div class="pricing__grid">
+      @for (p of plans; track p.id; let i = $index) {
+        <article
+          class="pricing-card"
+          [class.pricing-card--accent]="p.accent"
+          appAnimateOnScroll
+          [appAnimateOnScrollDelay]="i * 150"
+        >
+          @if (p.badge) {
+            <div class="pricing-card__badge">{{ p.badge }}</div>
+          }
+          <h3 class="pricing-card__name">{{ p.name }}</h3>
+          <div class="pricing-card__price">
+            {{ displayPrice(p) }}<span class="pricing-card__per">/{{ periodLabel(p) }}</span>
+          </div>
+          <p class="pricing-card__credits">{{ p.credits }}</p>
+          <ul class="pricing-card__list">
+            @for (r of p.rows; track r.text) {
+              <li [class.pricing-card__row--no]="!r.ok">
+                <span class="pricing-card__mark">{{ r.ok ? '✓' : '✗' }}</span>
+                {{ r.text }}
+              </li>
+            }
+          </ul>
+          @if (p.accent) {
+            <a routerLink="/register" class="pricing-card__cta pricing-card__cta--fill">{{ p.cta }}</a>
+          } @else {
+            <a routerLink="/register" class="pricing-card__cta pricing-card__cta--outline">{{ p.cta }}</a>
+          }
+        </article>
+      }
+    </div>
+
+    <p class="pricing__fine text-center muted" appAnimateOnScroll [appAnimateOnScrollDelay]="120">
+      All plans include: 14-day money-back guarantee • Cancel anytime • No setup fees
+    </p>
+
+    <div class="pricing-addons" appAnimateOnScroll [appAnimateOnScrollDelay]="160">
+      <h3 class="pricing-addons__title">Need more credits? Buy add-on packs anytime:</h3>
+      <ul class="pricing-addons__list">
+        <li><strong>$5</strong> → 25 extra credits</li>
+        <li><strong>$15</strong> → 100 extra credits</li>
+        <li><strong>$40</strong> → 300 extra credits</li>
+      </ul>
+    </div>
+  </div>
+</section>

@@ -5,28 +5,8 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-oauth-callback',
   standalone: true,
-  template: `
-    <div class="wrap">
-      @if (err()) {
-        <p class="err">{{ err() }}</p>
-      } @else {
-        <p>Signing you in…</p>
-      }
-    </div>
-  `,
-  styles: `
-    .wrap {
-      max-width: 24rem;
-      margin: 3rem auto;
-      padding: 1rem;
-      text-align: center;
-      font-size: 0.875rem;
-      color: #52525b;
-    }
-    .err {
-      color: #b91c1c;
-    }
-  `,
+  templateUrl: './oauth-callback.component.html',
+  styleUrl: './oauth-callback.component.scss',
 })
 export class OauthCallbackComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
