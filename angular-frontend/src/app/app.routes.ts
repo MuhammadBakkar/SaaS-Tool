@@ -8,6 +8,10 @@ export const routes: Routes = [
     loadComponent: () => import('./landing/landing.component').then((m) => m.LandingComponent),
   },
   {
+    path: 'pricing',
+    loadComponent: () => import('./landing/landing.component').then((m) => m.LandingComponent),
+  },
+  {
     path: 'terms',
     loadComponent: () => import('./legal/terms/terms.component').then((m) => m.TermsComponent),
   },

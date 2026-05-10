@@ -15,10 +15,25 @@ export class FooterComponent {
   private readonly scroll = inject(ScrollService);
   readonly supportMailto = SUPPORT_MAILTO;
 
-  goSection(id: 'features' | 'how-it-works' | 'pricing' | 'faq', ev: Event): void {
+  onPricingNav(ev: MouseEvent): void {
+    if (this.router.url.split('?')[0].split('#')[0] === '/pricing') {
+      ev.preventDefault();
+      this.scroll.smoothScroll('pricing');
+    }
+  }
+
+  goSection(id: 'features' | 'how-it-works' | 'faq', ev: Event): void {
     ev.preventDefault();
     const path = this.router.url.split('?')[0].split('#')[0];
-    if (path !== '/' && path !== '') {
+    const onHome = path === '/' || path === '';
+    const onPricingRoute = path === '/pricing';
+
+    if (onPricingRoute) {
+      void this.router.navigate(['/']).then(() => requestAnimationFrame(() => this.scroll.smoothScroll(id)));
+      return;
+    }
+
+    if (!onHome) {
       void this.router.navigate(['/']).then(() => requestAnimationFrame(() => this.scroll.smoothScroll(id)));
     } else {
       this.scroll.smoothScroll(id);

@@ -60,7 +60,7 @@
       <h3 class="ft__h">Product</h3>
       <button type="button" class="ft__link" (click)="goSection('features', $event)">Features</button>
       <button type="button" class="ft__link" (click)="goSection('how-it-works', $event)">How it works</button>
-      <button type="button" class="ft__link" (click)="goSection('pricing', $event)">Pricing</button>
+      <a routerLink="/pricing" class="ft__link" (click)="onPricingNav($event)">Pricing</a>
       <a href="#" class="ft__link">Changelog</a>
     </div>
     <div class="ft__col">

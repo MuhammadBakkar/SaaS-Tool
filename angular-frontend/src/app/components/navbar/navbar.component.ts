@@ -33,13 +33,34 @@ export class NavbarComponent {
   }
 
   isActive(section: 'features' | 'how-it-works' | 'pricing' | 'faq'): boolean {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    if (section === 'pricing' && path === '/pricing') return true;
     return this.scroll.activeSection() === section;
   }
 
-  goSection(id: 'features' | 'how-it-works' | 'pricing' | 'faq', ev: Event): void {
+  onPricingNav(ev: MouseEvent): void {
+    if (this.router.url.split('?')[0].split('#')[0] === '/pricing') {
+      ev.preventDefault();
+      this.scroll.smoothScroll('pricing');
+    }
+    this.menuOpen.set(false);
+  }
+
+  goSection(id: 'features' | 'how-it-works' | 'faq', ev: Event): void {
     ev.preventDefault();
     const path = this.router.url.split('?')[0].split('#')[0];
-    if (path !== '/' && path !== '') {
+    const onHome = path === '/' || path === '';
+    const onPricingRoute = path === '/pricing';
+
+    if (onPricingRoute) {
+      void this.router.navigate(['/']).then(() => {
+        requestAnimationFrame(() => this.scroll.smoothScroll(id));
+      });
+      this.menuOpen.set(false);
+      return;
+    }
+
+    if (!onHome) {
       void this.router.navigate(['/']).then(() => {
         requestAnimationFrame(() => this.scroll.smoothScroll(id));
       });

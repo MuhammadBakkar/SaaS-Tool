@@ -30,9 +30,12 @@
       <button type="button" class="nav__link" [class.nav__link--active]="isActive('how-it-works')" (click)="goSection('how-it-works', $event)">
         How it works
       </button>
-      <button type="button" class="nav__link" [class.nav__link--active]="isActive('pricing')" (click)="goSection('pricing', $event)">
-        Pricing
-      </button>
+      <a
+        routerLink="/pricing"
+        class="nav__link"
+        [class.nav__link--active]="isActive('pricing')"
+        (click)="onPricingNav($event)"
+        >Pricing</a>
       <button type="button" class="nav__link" [class.nav__link--active]="isActive('faq')" (click)="goSection('faq', $event)">
         FAQ
       </button>
@@ -58,7 +61,7 @@
   <div id="nav-drawer" class="nav__drawer" [class.nav__drawer--open]="menuOpen()">
     <button type="button" class="nav__drawer-link" (click)="goSection('features', $event)">Features</button>
     <button type="button" class="nav__drawer-link" (click)="goSection('how-it-works', $event)">How it works</button>
-    <button type="button" class="nav__drawer-link" (click)="goSection('pricing', $event)">Pricing</button>
+    <a routerLink="/pricing" class="nav__drawer-link" (click)="onPricingNav($event)">Pricing</a>
     <button type="button" class="nav__drawer-link" (click)="goSection('faq', $event)">FAQ</button>
     <a routerLink="/login" class="btn btn--ghost btn--block">Login</a>
     <a routerLink="/register" class="btn btn--accent btn--block">Start Free</a>
